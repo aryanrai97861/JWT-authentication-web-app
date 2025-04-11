@@ -1,0 +1,29 @@
+# Node.js dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Environment variables
+backend/.env
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Tailwind CSS generated files (optional - if using CLI builds)
+frontend/src/output.css
+frontend/src/output.css.map
+
+# Build directories (optional if using any build tools)
+dist/
+build/

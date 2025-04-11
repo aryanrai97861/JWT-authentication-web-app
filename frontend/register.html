@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link href="./src/output.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+    <form id="registerForm" class="space-y-4">
+      <input type="text" id="name" placeholder="Name" required
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      <input type="email" id="email" placeholder="Email" required
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      <input type="password" id="password" placeholder="Password" required
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300" />
+      <button type="submit"
+        class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Register</button>
+    </form>
+    <p id="message" class="mt-4 text-sm text-center text-gray-600"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('http://localhost:5000/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          message.textContent = 'Registration successful!';
+          message.classList.add('text-green-600');
+          form.reset();
+        } else {
+          message.textContent = data.message || 'Something went wrong.';
+          message.classList.add('text-red-600');
+        }
+      } catch (err) {
+        message.textContent = 'Server error';
+        message.classList.add('text-red-600');
+      }
+    });
+  </script>
+</body>
+</html>
