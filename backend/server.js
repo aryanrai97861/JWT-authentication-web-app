@@ -1,31 +1,50 @@
-//this is for connecting to allt he server and datbase 
-const express=require('express');
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const userRoutes = require('./routes/userRoutes');
 const connectDB = require('./config/db');
-const cors=require('cors');
 require('dotenv').config();
 
-const app=express();
+const app = express();
 
-
-//middleware
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
+app.use(morgan('dev')); // Request logging
 
-//connected to mongDB
-connectDB();
+// Routes
+app.use('/api', userRoutes);
 
-//test route
-app.get('/',(req,res)=>{
-    res.send('API is running');
+// Base route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to Target Account Matching API' });
 });
 
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
-
-
-
-const PORT=process.env.PORT || 5000;
-//start server
-app.listen(PORT,()=>{
-    console.log(`Server running on http://localhost:${PORT}`)//always use backtick
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong!'
+  });
 });
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API endpoint not found'
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  
+  // Connect to database
+  await connectDB();
+
+});
+
+module.exports = app;
